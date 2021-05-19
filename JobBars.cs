@@ -72,9 +72,9 @@ namespace JobBars {
             IntPtr actorControlSelfPtr = pluginInterface.TargetModuleScanner.ScanText("E8 ?? ?? ?? ?? 0F B7 0B 83 E9 64");
             actorControlSelfHook = new Hook<ActorControlSelfDelegate>(actorControlSelfPtr, (ActorControlSelfDelegate)ActorControlSelf);
             actorControlSelfHook.Enable();
-            IntPtr initZonePtr = pluginInterface.TargetModuleScanner.ScanText("E8 ?? ?? ?? ?? 45 33 C0 48 8D 53 10 8B CE E8 ?? ?? ?? ?? 48 8D 4B 60 E8 ?? ?? ?? ?? 48 8D 4B 6C");
-            initZoneHook = new Hook<InitZoneDelegate>(initZonePtr, (InitZoneDelegate)InitZone);
-            initZoneHook.Enable();
+            //IntPtr initZonePtr = pluginInterface.TargetModuleScanner.ScanText("E8 ?? ?? ?? ?? 45 33 C0 48 8D 53 10 8B CE E8 ?? ?? ?? ?? 48 8D 4B 60 E8 ?? ?? ?? ?? 48 8D 4B 6C");
+            //initZoneHook = new Hook<InitZoneDelegate>(initZonePtr, (InitZoneDelegate)InitZone);
+            //initZoneHook.Enable();
 
             PluginInterface.UiBuilder.OnBuildUi += BuildUI;
             PluginInterface.Framework.OnUpdateEvent += FrameworkOnUpdate;
@@ -103,7 +103,7 @@ namespace JobBars {
             var _sheet = PluginInterface.Data.GetExcelSheet<Lumina.Excel.GeneratedSheets.Action>().Where(x => !string.IsNullOrEmpty(x.Name) && x.IsPlayerAction);
             foreach(var item in _sheet) {
                 var attackType = item.ActionCategory.Value.Name.ToString();
-                if(attackType == "Spell" || attackType == "Weaponskill") {
+                if(attackType == "Spell" || attackType == "Weaponskill" || attackType == "战技" || attackType == "魔法") {
                     GCDs.Add(item.RowId);
                 }
             }

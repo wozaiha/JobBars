@@ -10,8 +10,8 @@ using static JobBars.UI.UIColor;
 
 namespace JobBars.UI {
     public unsafe class UIBuff : UIElement {
-        public static ushort WIDTH = 37;
-        public static ushort HEIGHT = 28;
+        public static ushort WIDTH = 36;
+        public static ushort HEIGHT = 36;
 
         private ushort PART_ID;
         private AtkTextNode* TextNode;

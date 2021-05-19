@@ -28,6 +28,14 @@
 	  <ProjectReference Include="lib\FFXIVClientStructs\FFXIVClientStructs.csproj" />
 	</ItemGroup>
 	<ItemGroup>
+		<PackageReference Include="ILMerge" Version="3.0.41" />
+	</ItemGroup>
+
+	<Target Name="ILMerge" AfterTargets="PostBuildEvent">
+		<!-- Merge and rename -->
+		<Exec Command="$(ILMergeConsolePath) /ndebug $(TargetDir)JobBars.dll /out:$(TargetDir)JobBars.dll /log $(TargetDir)FFXIVClientStructs.dll /log $(TargetDir)FFXIVClientInterface.dll /lib:$(APPDATA)\XIVLauncher\addon\Hooks\dev" />
+	</Target>
+	<ItemGroup>
 		<Reference Include="Dalamud">
             <Private>false</Private>
             <HintPath>$(APPDATA)\XIVLauncher\addon\Hooks\dev\Dalamud.dll</HintPath>
