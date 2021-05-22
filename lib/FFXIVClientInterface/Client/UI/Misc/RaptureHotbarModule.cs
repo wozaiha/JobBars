@@ -88,7 +88,8 @@ namespace FFXIVClientInterface.Client.UI.Misc {
     
     [StructLayout(LayoutKind.Explicit, Size = 0x27278)]
     public unsafe struct RaptureHotbarModuleStruct {
-        private const int HotbarStart = 0x90;
+        //private const int HotbarStart = 0x90;     //5.5
+        private const int HotbarStart = 0x88;
         
         [FieldOffset(0x00000)] public void* vtbl;
         
@@ -114,8 +115,11 @@ namespace FFXIVClientInterface.Client.UI.Misc {
         [FieldOffset(HotbarStart + HotBar.Size * 16)] public HotBar CrossHotBar07;
         [FieldOffset(HotbarStart + HotBar.Size * 17)] public HotBar CrossHotBar08;
 
-        [FieldOffset(0x0FC90)] public HotBar PetHotBar;
-        [FieldOffset(0x10A90)] public HotBar CrossPetHotBar;
+        //[FieldOffset(0x0FC90)] public HotBar PetHotBar;
+        //[FieldOffset(0x10A90)] public HotBar CrossPetHotBar;
+
+        [FieldOffset(0x0FC88)] public HotBar PetHotBar;
+        [FieldOffset(0x10A88)] public HotBar CrossPetHotBar;
     }
 
     [StructLayout(LayoutKind.Sequential, Size = HotBar.Size)]
