@@ -57,7 +57,7 @@ namespace JobBars {
             Party = new PList(pluginInterface, pluginInterface.TargetModuleScanner); // TEMP
             PluginLog.Log($"PARTY =========> {Party.Count}");
             foreach(var member in Party) {
-                PluginLog.Log($"{member.Actor.Name}");
+                PluginLog.Log($"{member.CharacterName}");
             }
             // ==============
 

@@ -21,7 +21,7 @@ namespace JobBars.Data {
         public HashSet<string> GaugeDisabled = new HashSet<string>();
         public Dictionary<string, string> GaugeColorOverride = new Dictionary<string, string>();
         public Dictionary<string, GaugeVisualType> GaugeTypeOverride = new Dictionary<string, GaugeVisualType>();
-        public bool GaugeIconReplacement = true;
+        public bool GaugeIconReplacement = false;
 
         public Vector2 BuffPosition { get; set; } = new Vector2(300, 300);
         public float BuffScale = 1.0f;

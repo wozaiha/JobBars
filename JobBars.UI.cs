@@ -87,10 +87,10 @@ namespace JobBars {
                 Configuration.Config.Save();
             }
 
-            if(ImGui.Checkbox("DoT Icon Replacement", ref Configuration.Config.GaugeIconReplacement)) {
-                GManager.ResetJob(CurrentJob);
-                Configuration.Config.Save();
-            }
+            //if(ImGui.Checkbox("DoT Icon Replacement", ref Configuration.Config.GaugeIconReplacement)) {
+            //    GManager.ResetJob(CurrentJob);
+            //    Configuration.Config.Save();
+            //}
             if (ImGui.Checkbox("Horizontal Gauges", ref Configuration.Config.GaugeHorizontal)) {
                 GManager.ResetJob(CurrentJob);
                 Configuration.Config.Save();

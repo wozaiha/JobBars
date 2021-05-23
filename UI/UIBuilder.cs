@@ -71,6 +71,7 @@ namespace JobBars.UI {
             if (B_RootRes != null) {
                 UiHelper.Hide(B_RootRes);
             }
+            DeleteNodes();
         }
 
         public static void RecurseHide(AtkResNode* node, bool hide = true, bool siblings = true) {
@@ -373,6 +374,14 @@ namespace JobBars.UI {
             foreach(var buff in Buffs) {
                 buff.Hide();
             }
+        }
+        public void DeleteNodes()
+        {
+            var addon = _ADDON;
+            if (addon == null) return;
+            var count = addon->UldManager.NodeListCount;
+            if (count <= 4) return;
+            addon->UldManager.NodeListCount = 4;
         }
     }
 }

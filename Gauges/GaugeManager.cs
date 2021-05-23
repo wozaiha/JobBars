@@ -314,8 +314,8 @@ namespace JobBars.Gauges {
                 new GaugeProc("Verfire/Verstone")
                     .WithProcs(new[]
                     {
-                        new Proc(BuffIds.VerfireReady, UIColor.Red),
-                        new Proc(BuffIds.VerstoneReady, UIColor.White)
+                        new Proc(BuffIds.VerstoneReady, UIColor.White),
+                        new Proc(BuffIds.VerfireReady, UIColor.Red)
                     })
             });
             // ============ MCH ==================
