@@ -71,7 +71,7 @@ namespace JobBars.UI {
             if (B_RootRes != null) {
                 UiHelper.Hide(B_RootRes);
             }
-            DeleteNodes();
+            //DeleteNodes();
         }
 
         public static void RecurseHide(AtkResNode* node, bool hide = true, bool siblings = true) {

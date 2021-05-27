@@ -71,20 +71,20 @@ namespace JobBars.UI {
 
             IntPtr setIconRecastPtr = PluginInterface.TargetModuleScanner.ScanText("40 53 48 83 EC 20 48 8B D9 E8 ?? ?? ?? ?? 48 8B 4B 10 48 85 C9 74 23 BA ?? ?? ?? ?? "); // changes recast partId for gcds
             setIconRecastHook = new Hook<SetIconRecastDelegate>(setIconRecastPtr, (SetIconRecastDelegate)SetIconRecast);
-            //setIconRecastHook.Enable();
+            setIconRecastHook.Enable();
 
             // this is for stuff like thunder during thundercloud procs. god this sig is nasty
             IntPtr setIconRecastPtr2 = PluginInterface.TargetModuleScanner.ScanText("40 53 48 83 EC 20 0F B6 81 ?? ?? ?? ?? 48 8B D9 48 83 C1 08 A8 01 74 1E 48 83 79 ?? ?? 74 17 A8 08 75 0E 48 83 79 ?? ?? 75 07 E8 ?? ?? ?? ?? EB 05 E8 ?? ?? ?? ?? F6 83 ?? ?? ?? ?? ?? 0F 84 ?? ?? ?? ?? 48 8B 93 ?? ?? ?? ??");
             setIconRecastHook2 = new Hook<SetIconRecastDelegate2>(setIconRecastPtr2, (SetIconRecastDelegate2)SetIconRecast2);
-            //setIconRecastHook2.Enable();
+            setIconRecastHook2.Enable();
 
             IntPtr setIconTextPtr = PluginInterface.TargetModuleScanner.ScanText("55 57 48 83 EC 28 0F B6 44 24 ?? 8B EA 48 89 5C 24 ?? 48 8B F9"); // sets icon text for abilities which use mp, like Combust
             setIconRecastTextHook = new Hook<SetIconRecastTextDelegate>(setIconTextPtr, (SetIconRecastTextDelegate)SetIconRecastText);
-            //setIconRecastTextHook.Enable();
+            setIconRecastTextHook.Enable();
 
             IntPtr setIconTextPtr2 = PluginInterface.TargetModuleScanner.ScanText("4C 8B DC 53 55 48 81 EC ?? ?? ?? ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 84 24 ?? ?? ?? ?? 49 89 73 18 48 8B EA"); // sets icon text for other abilities, like Goring blade
             setIconRecastTextHook2 = new Hook<SetIconRecastTextDelegate2>(setIconTextPtr2, (SetIconRecastTextDelegate2)SetIconRecastText2);
-            //setIconRecastTextHook2.Enable();
+            setIconRecastTextHook2.Enable();
         }
 
         public void Reset() {
@@ -191,6 +191,7 @@ namespace JobBars.UI {
                             IconComponentOverride.Add((IntPtr)icon->Component);
 
                             UiHelper.Hide(icon->Component->UldManager.NodeList[14]); // another image overlay :shrug:
+                            UiHelper.Hide(icon->Component->UldManager.NodeList[10]);
                         }
                         else if(state == IconState.RUNNING) {
                             UiHelper.Show(cdOverlay);
