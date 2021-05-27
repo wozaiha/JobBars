@@ -95,6 +95,12 @@ namespace JobBars.Gauges {
             }
         }
         public override void ProcessAction(Item action) {
+            if (action == new Item(ActionIds.IronJaws) &&
+                Triggers.Contains(action) && State == GaugeState.ACTIVE)
+            {
+                Start(action);
+                return;
+            }
             if (Triggers.Contains(action) && (!(State == GaugeState.ACTIVE) || AllowRefresh)) {
                 Start(action);
             }
