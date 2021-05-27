@@ -89,19 +89,19 @@ namespace JobBars.Gauges {
 
                 if (UI is UIGauge gauge) {
                     gauge.SetText(((int)timeleft).ToString());
+                    gauge.SetTextColor(timeleft < 4f  ? Red : NoColor);
                     gauge.SetPercent((float)timeleft / MaxDuration);
                     SetIcon(timeleft, MaxDuration);
                 }
             }
         }
         public override void ProcessAction(Item action) {
-            if (action == new Item(ActionIds.IronJaws) &&
-                Triggers.Contains(action) && State == GaugeState.ACTIVE)
+            if (action == new Item(ActionIds.IronJaws) || action == new Item(ActionIds.Tridisaster) && State == GaugeState.ACTIVE)
             {
                 Start(action);
                 return;
             }
-            if (Triggers.Contains(action) && (!(State == GaugeState.ACTIVE) || AllowRefresh)) {
+            if (Triggers.Contains(action) && (State != GaugeState.ACTIVE || AllowRefresh)) {
                 Start(action);
             }
         }

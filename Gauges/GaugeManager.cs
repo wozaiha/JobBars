@@ -165,7 +165,6 @@ namespace JobBars.Gauges {
                     .WithTriggers(new[]{
                         new Item(ActionIds.CausticBite),
                         new Item(ActionIds.VenomousBite),
-                        new Item(ActionIds.IronJaws)
                     })
                     .WithReplaceIcon(new []{
                         ActionIds.CausticBite,
@@ -176,7 +175,6 @@ namespace JobBars.Gauges {
                     .WithTriggers(new[]{
                         new Item(ActionIds.Windbite),
                         new Item(ActionIds.Stormbite),
-                        new Item(ActionIds.IronJaws)
                     })
                     .WithReplaceIcon(new []{
                         ActionIds.Windbite,
