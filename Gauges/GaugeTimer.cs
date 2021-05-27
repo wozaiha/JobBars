@@ -19,6 +19,8 @@ namespace JobBars.Gauges {
 
         public float Duration;
 
+        
+
         public GaugeTimer(string name, float duration) : base(name) {
             MaxDuration = duration;
             DefaultDuration = MaxDuration;
@@ -78,6 +80,7 @@ namespace JobBars.Gauges {
 
         // ===== UPDATE ============
         public override void Tick(DateTime time, Dictionary<Item, float> buffDict) {
+
             if (State == GaugeState.ACTIVE) {
                 var timeleft = TimeLeft(Duration, time, buffDict);
                 if (timeleft <= 0) {
@@ -96,7 +99,7 @@ namespace JobBars.Gauges {
             }
         }
         public override void ProcessAction(Item action) {
-            if (action == new Item(ActionIds.IronJaws) || action == new Item(ActionIds.Tridisaster) && State == GaugeState.ACTIVE)
+            if (action == new Item(ActionIds.IronJaws)  && State == GaugeState.ACTIVE)
             {
                 Start(action);
                 return;
@@ -106,6 +109,8 @@ namespace JobBars.Gauges {
             }
         }
 
+
+        
         public override int GetHeight() {
             return UI == null ? 0 : UI.GetHeight(0);
         }

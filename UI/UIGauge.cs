@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JobBars.Data;
 using static JobBars.UI.UIColor;
 
 namespace JobBars.UI {
@@ -163,6 +164,8 @@ namespace JobBars.UI {
             if (!color.Equals(currentColor))
             {
                 UIColor.SetColor((AtkResNode*)TextNode, color);
+                var se = Configuration.Config.SeNumber;
+                if (currentColor.Equals(NoColor) && se>0 ) UiHelper._playSe(se+36, 0, 0);
                 currentColor = color;
             }
         }

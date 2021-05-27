@@ -229,7 +229,8 @@ namespace JobBars.Gauges {
                     .WithTriggers(new[]{
                         new Item(ActionIds.ArcBio),
                         new Item(ActionIds.ArcBio2),
-                        new Item(ActionIds.Bio3)
+                        new Item(ActionIds.Bio3),
+                        new Item(ActionIds.Tridisaster)
                     })
                     .WithReplaceIcon(new []{
                         ActionIds.ArcBio,
@@ -240,7 +241,8 @@ namespace JobBars.Gauges {
                 new GaugeTimer("Miasma", 30)
                     .WithTriggers(new[]{
                         new Item(ActionIds.Miasma),
-                        new Item(ActionIds.Miasma3)
+                        new Item(ActionIds.Miasma3),
+                        new Item(ActionIds.Tridisaster)
                     })
                     .WithReplaceIcon(new []{
                         ActionIds.Miasma,
