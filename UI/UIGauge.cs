@@ -164,8 +164,7 @@ namespace JobBars.UI {
             if (!color.Equals(currentColor))
             {
                 UIColor.SetColor((AtkResNode*)TextNode, color);
-                var se = Configuration.Config.SeNumber;
-                if (currentColor.Equals(NoColor) && se>0 ) UiHelper._playSe(se+36, 0, 0);
+                if (currentColor.Equals(NoColor) && Configuration.Config.SeNumber>0 ) UiHelper._playSe(Configuration.Config.SeNumber+36, 0, 0);
                 currentColor = color;
             }
         }
