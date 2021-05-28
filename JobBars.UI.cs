@@ -92,10 +92,10 @@ namespace JobBars {
                Configuration.Config.Save();
             }
 
-            ImGui.SameLine(250f);
+            
             ImGui.Text("Play <se.");
             ImGui.SameLine();
-            ImGui.SetNextItemWidth(30f);
+            ImGui.SetNextItemWidth(25f);
             if (ImGui.InputInt("##se.Number",ref _Config.SeNumber,0))
             {
                 if (_Config.SeNumber < 0) _Config.SeNumber = 0;
