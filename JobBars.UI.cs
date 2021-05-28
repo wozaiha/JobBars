@@ -15,7 +15,7 @@ using static JobBars.UI.UIColor;
 namespace JobBars {
     public unsafe partial class JobBars {
 
-        public bool Visible = true;
+        public bool Visible = false;
         private bool GAUGE_LOCK = true;
         private bool BUFF_LOCK = true;
 
@@ -78,38 +78,42 @@ namespace JobBars {
         JobIds G_SelectedJob = JobIds.OTHER;
         private void DrawGaugeSettings() {
             if (GManager == null) return;
-
             string _ID = "##JobBars_Gauges";
+
+            // ===== GENERAL GAUGE =======
             if (ImGui.Checkbox("Locked" + _ID, ref GAUGE_LOCK)) {
             }
             if (ImGui.InputFloat("Scale" + _ID, ref Configuration.Config.GaugeScale)) {
                 UI.SetGaugeScale(Configuration.Config.GaugeScale);
                 Configuration.Config.Save();
             }
-
             if(ImGui.Checkbox("DoT Icon Replacement", ref Configuration.Config.GaugeIconReplacement)) {
                GManager.ResetJob(CurrentJob);
                Configuration.Config.Save();
             }
 
             ImGui.SameLine(250f);
-            ImGui.Text("Play se.");
+            ImGui.Text("Play <se.");
             ImGui.SameLine();
-            ImGui.SetNextItemWidth(100f);
-            if (ImGui.InputInt("##se.Number",ref _Config.SeNumber,1))
+            ImGui.SetNextItemWidth(30f);
+            if (ImGui.InputInt("##se.Number",ref _Config.SeNumber,0))
             {
                 if (_Config.SeNumber < 0) _Config.SeNumber = 0;
                 if (_Config.SeNumber >16) _Config.SeNumber = 16;
                 Configuration.Config.Save();
             }
+            ImGui.SameLine();
+            ImGui.Text("> when dots going to fade (0 = off)");
 
             if (ImGui.Checkbox("Horizontal Gauges", ref Configuration.Config.GaugeHorizontal)) {
                 GManager.ResetJob(CurrentJob);
                 Configuration.Config.Save();
             }
             
-            ImGui.SameLine(250f);
-            ImGui.Text(" when dots going to fade (0 = off)");
+            if (ImGui.Checkbox("Align Right", ref Configuration.Config.GaugeAlignRight)) {
+                GManager.ResetJob(CurrentJob);
+                Configuration.Config.Save();
+            }
 
             var size = ImGui.GetContentRegionAvail();
             ImGui.BeginChild(_ID + "/Child", size, true);
@@ -221,14 +225,15 @@ namespace JobBars {
         }
         public void SetColor(Gauge gauge, ElementColor color) {
             gauge.Visual.Color = color;
-            gauge.SetColor();
+            gauge.SetupVisual(resetValue: false);
         }
 
         JobIds B_SelectedJob = JobIds.OTHER;
         private void DrawBuffSettings() {
             if (GManager == null) return;
-
             string _ID = "##JobBars_Buffs";
+
+            // ===== GENERAL BUFFS =======
             if (ImGui.Checkbox("Locked" + _ID, ref BUFF_LOCK)) {
             }
             if (ImGui.InputFloat("Scale" + _ID, ref Configuration.Config.BuffScale)) {

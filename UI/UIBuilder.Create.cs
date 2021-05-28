@@ -2,12 +2,6 @@
 using FFXIVClientStructs.FFXIV.Client.Graphics;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using JobBars.Helper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace JobBars.UI {
     public unsafe partial class UIBuilder {
@@ -183,43 +177,6 @@ namespace JobBars.UI {
             node->AtkResNode.Flags = 8243;
 
             return node;
-        }
-
-
-        // ========= DON'T USE THIS :) JUST FOR REFERENCE ==========
-        /*public void LoadTex(ushort assetIdx, string path) {
-            var addon = _ADDON;
-
-            uint newId = (uint)(assetIdx + 1);
-            var pt = IntPtr.Add(new IntPtr(addon->UldManager.Assets), 32 * assetIdx + 8);
-            Marshal.WriteByte(pt + 16, 1);
-            var a = LoadTexture(pt, path, 1); // game function
-            addon->UldManager.Assets[assetIdx].Id = newId;
-
-            if (newId > addon->UldManager.AssetCount) {
-                var ptr = new IntPtr(addon->UldManager.Assets) - 8;
-                Marshal.WriteInt32(ptr, (int)newId);
-                addon->UldManager.AssetCount = (ushort)newId;
-            }
-        }*/
-
-        // JUST LOAD EVERYTHING INTO PARTLIST #0, I DON'T CARE LMAO
-        public void AddPart(ushort assetIdx, ushort partIdx, ushort U, ushort V, ushort Width, ushort Height) {
-            var addon = _ADDON;
-
-            var asset = UiHelper.CleanAlloc<AtkUldAsset>();
-            asset->Id = addon->UldManager.Assets[assetIdx].Id;
-            asset->AtkTexture = addon->UldManager.Assets[assetIdx].AtkTexture;
-
-            addon->UldManager.PartsList->Parts[partIdx].UldAsset = asset;
-            addon->UldManager.PartsList->Parts[partIdx].U = U;
-            addon->UldManager.PartsList->Parts[partIdx].V = V;
-            addon->UldManager.PartsList->Parts[partIdx].Width = Width;
-            addon->UldManager.PartsList->Parts[partIdx].Height = Height;
-
-            if ((partIdx + 1) > addon->UldManager.PartsList->PartCount) {
-                addon->UldManager.PartsList->PartCount = (ushort)(partIdx + 1);
-            }
         }
     }
 }

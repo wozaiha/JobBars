@@ -28,10 +28,10 @@ namespace JobBars {
         public DalamudPluginInterface PluginInterface { get; private set; }
         public string AssemblyLocation { get; private set; } = Assembly.GetExecutingAssembly().Location;
 
-        public UIBuilder UI;
-        public GaugeManager GManager;
-        public BuffManager BManager;
-        public Configuration _Config;
+        private UIBuilder UI;
+        private GaugeManager GManager;
+        private BuffManager BManager;
+        private Configuration _Config;
 
         private delegate void ReceiveActionEffectDelegate(int sourceId, IntPtr sourceCharacter, IntPtr pos, IntPtr effectHeader, IntPtr effectArray, IntPtr effectTrail);
         private Hook<ReceiveActionEffectDelegate> receiveActionEffectHook;
@@ -51,9 +51,7 @@ namespace JobBars {
             UIColor.SetupColors();
             SetupActions();
 
-            // ===============
             Party = new PList(pluginInterface, pluginInterface.TargetModuleScanner); // TEMP
-            // ==============
 
             _Config = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             _Config.Initialize(PluginInterface);
@@ -167,7 +165,7 @@ namespace JobBars {
                     var buffItem = new Item
                     {
                         Id = entries[i].value,
-                        Type = ItemType.BUFF
+                        Type = ItemType.Buff
                     };
 
                     if(!isParty) { // don't let party members affect our gauge
@@ -184,11 +182,9 @@ namespace JobBars {
         private void ActorControlSelf(uint entityId, uint id, uint a3, uint a4, uint a5, uint a6, int a7, int a8, Int64 a9, byte a10) {
             actorControlSelfHook.Original(entityId, id, a3, a4, a5, a6, a7, a8, a9, a10);
             if (a4 == 0x40000010) {
-                PluginLog.Log("WIPE");
                 Reset();
             }
             else if(a4 == 0x40000001) {
-                PluginLog.Log("INSTANCE START");
                 Reset();
             }
         }
@@ -233,11 +229,8 @@ namespace JobBars {
                 if(UI._ADDON == null) {
                     return;
                 }
-                PluginLog.Log("TEXTURES");
                 UI.SetupTex();
-                PluginLog.Log("PARTS");
                 UI.SetupPart();
-                PluginLog.Log("INIT");
                 UI.Init();
                 GManager = new GaugeManager(PluginInterface, UI);
                 BManager = new BuffManager(UI);
@@ -278,6 +271,48 @@ namespace JobBars {
         }
         public void RemoveCommands() {
             PluginInterface.CommandManager.RemoveHandler("/jobbars");
+        }
+    }
+
+    // ===== BUFF OR ACTION ======
+    public enum ItemType {
+        Buff,
+        Action, // either GCD or OGCD
+        GCD,
+        OGCD
+    }
+    public struct Item {
+        public uint Id;
+        public ItemType Type;
+
+        // GENERATORS
+        public Item(ActionIds action) {
+            Id = (uint)action;
+            Type = ItemType.Action;
+        }
+        public Item(BuffIds buff) {
+            Id = (uint)buff;
+            Type = ItemType.Buff;
+        }
+
+        // EQUALITY
+        public override bool Equals(object obj) {
+            return obj is Item overrides && Equals(overrides);
+        }
+        public bool Equals(Item other) {
+            return (Id == other.Id) && ((Type == ItemType.Buff) == (other.Type == ItemType.Buff));
+        }
+        public static bool operator ==(Item left, Item right) {
+            return left.Equals(right);
+        }
+        public static bool operator !=(Item left, Item right) {
+            return !(left == right);
+        }
+        public override int GetHashCode() {
+            int hash = 13;
+            hash = (hash * 7) + Id.GetHashCode();
+            hash = (hash * 7) + (Type == ItemType.Buff).GetHashCode();
+            return hash;
         }
     }
 }

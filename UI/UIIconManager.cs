@@ -13,10 +13,10 @@ using System.Threading.Tasks;
 
 namespace JobBars.UI {
     public enum IconState {
-        START_RUNNING, // turn on the recast, turn on the test, turn off the dash
-        RUNNING, // good to go
-        DONE_RUNNING, // turn off the recast, turn off the text
-        WAITING
+        StartRunning, // turn on the recast, turn on the test, turn off the dash
+        Running, // good to go
+        DoneRunning, // turn off the recast, turn off the text
+        Waiting
     }
 
     public struct IconProgress {
@@ -69,7 +69,7 @@ namespace JobBars.UI {
             IconComponentOverride = new HashSet<IntPtr>();
             IconTextOverride = new HashSet<IntPtr>();
 
-            IntPtr setIconRecastPtr = PluginInterface.TargetModuleScanner.ScanText("40 53 48 83 EC 20 48 8B D9 E8 ?? ?? ?? ?? 48 8B 4B 10 48 85 C9 74 23 BA ?? ?? ?? ?? "); // changes recast partId for gcds
+            IntPtr setIconRecastPtr = PluginInterface.TargetModuleScanner.ScanText("40 53 48 83 EC 20 48 8B D9 E8 ?? ?? ?? ?? 48 8B 4B 10 48 85 C9 74 23"); // changes recast partId for gcds
             setIconRecastHook = new Hook<SetIconRecastDelegate>(setIconRecastPtr, (SetIconRecastDelegate)SetIconRecast);
             setIconRecastHook.Enable();
 
@@ -171,7 +171,7 @@ namespace JobBars.UI {
                         var iconImage = (AtkImageNode*)icon->Component->UldManager.NodeList[0]; 
                         var bottomLeftText = (AtkTextNode*)icon->Component->UldManager.NodeList[13];
 
-                        if(state == IconState.START_RUNNING) {
+                        if(state == IconState.StartRunning) {
                             ToCleanup.Add((IntPtr)icon);
                             TO_BUMP.Add(slotStruct->CommandId);
 
@@ -193,13 +193,13 @@ namespace JobBars.UI {
                             UiHelper.Hide(icon->Component->UldManager.NodeList[14]); // another image overlay :shrug:
                             UiHelper.Hide(icon->Component->UldManager.NodeList[10]);
                         }
-                        else if(state == IconState.RUNNING) {
+                        else if(state == IconState.Running) {
                             UiHelper.Show(cdOverlay);
                             cdOverlay->PartId = (ushort)(81 - (float)(iconProgress.Current / iconProgress.Max) * 80);
                             UiHelper.SetText(bottomLeftText, ((int)iconProgress.Current).ToString());
                             UiHelper.Show(bottomLeftText);
                         }
-                        else if(state == IconState.DONE_RUNNING) {
+                        else if(state == IconState.DoneRunning) {
                             TO_BUMP.Add(slotStruct->CommandId);
 
                             IconTextOverride.Remove((IntPtr)bottomLeftText);
@@ -211,7 +211,7 @@ namespace JobBars.UI {
                             UiHelper.Show(dashOverlay);
                             UiHelper.Hide(bottomLeftText);
                         }
-                        else if(state == IconState.WAITING) {
+                        else if(state == IconState.Waiting) {
                             UiHelper.Show(dashOverlay);
 
                             var time = DateTime.Now;
@@ -225,11 +225,11 @@ namespace JobBars.UI {
 
             foreach(var bump in TO_BUMP) { // necessary because there could be multiple of the same icon :/
                 var current = ActionIdToState[bump];
-                if(current == IconState.START_RUNNING) {
-                    ActionIdToState[bump] = IconState.RUNNING;
+                if(current == IconState.StartRunning) {
+                    ActionIdToState[bump] = IconState.Running;
                 }
-                else if(current == IconState.DONE_RUNNING) {
-                    ActionIdToState[bump] = IconState.WAITING;
+                else if(current == IconState.DoneRunning) {
+                    ActionIdToState[bump] = IconState.Waiting;
                 }
             }
         }

@@ -11,10 +11,10 @@ using static JobBars.UI.UIColor;
 
 namespace JobBars.UI {
     public unsafe class UIGauge : UIElement {
-        AtkTextNode* TextNode;
-        AtkNineGridNode* TextBlurNode;
-        AtkNineGridNode* BarMainNode;
-        string CurrentText = "";
+        private AtkTextNode* TextNode;
+        private AtkNineGridNode* TextBlurNode;
+        private AtkNineGridNode* BarMainNode;
+        private string CurrentText = "";
         private ElementColor currentColor;
 
         public UIGauge(UIBuilder _ui, AtkResNode* node = null) : base(_ui) {
@@ -173,8 +173,8 @@ namespace JobBars.UI {
         public void SetPercent(float value) {
             UiHelper.SetSize((AtkResNode*)BarMainNode, (int)(160 * value), 20);
         }
-        public void SetColor(ElementColor color) {
-            UIColor.SetColor((AtkResNode*) BarMainNode, color);
+        public override void SetColor(ElementColor color) {
+            UIColor.SetColor((AtkResNode*)BarMainNode, color);
         }
 
         public override int GetHeight(int param) {
@@ -182,6 +182,9 @@ namespace JobBars.UI {
         }
         public override int GetWidth(int param) {
             return 160;
+        }
+        public override int GetHorizontalYOffset() {
+            return 0;
         }
     }
 }
