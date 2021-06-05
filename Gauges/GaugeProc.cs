@@ -38,7 +38,8 @@ namespace JobBars.Gauges {
         public override void Tick(DateTime time, Dictionary<Item, float> buffDict) {
             if (UI is UIDiamond diamond) {
                 foreach (var proc in Procs) {
-                    if (buffDict.ContainsKey(proc.Trigger)) {
+                    if (!buffDict.TryGetValue(proc.Trigger, out var timeleft)) timeleft = -1;
+                    if (buffDict.ContainsKey(proc.Trigger) && timeleft>=4f || timeleft % 1 < 0.5f && timeleft>0f ) {
                         diamond.SelectPart(proc.Idx);
                     }
                     else {
