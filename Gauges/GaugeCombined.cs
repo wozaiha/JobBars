@@ -55,7 +55,7 @@ namespace JobBars.Gauges {
                             combo.SetPercent((float)currentTime / CD);
                             
                         }
-                        return;
+                        //return;
                     }
                 }
                 else
