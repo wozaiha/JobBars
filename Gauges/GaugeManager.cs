@@ -333,7 +333,20 @@ namespace JobBars.Gauges {
                         ActionIds.Thunder2
                     }, UI.Icon)
                     .WithVisual(GaugeVisual.Bar(UIColor.Purple))
-                    .WithStartHidden()
+                    .WithStartHidden(),
+
+                new GaugeCombined("Thunder", 24,3)
+                .WithTriggers(new []
+                {
+                    new Item(BuffIds.Thunder3),
+                    new Item(BuffIds.Thunder)
+                })
+                .TriggerDiamond(new []
+                {
+                    new Item(BuffIds.Thundercloud)
+                })
+                .WithVisual(GaugeVisual.BarDiamondCombo(UIColor.BlueGreen)),
+
             });
             // ============ RDM ==================
             JobToGauges.Add(JobIds.RDM, new Gauge[] {
