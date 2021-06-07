@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static JobBars.UI.UIColor;
 
 namespace JobBars.UI {
     public unsafe class UIArrow : UIElement {
@@ -97,7 +98,7 @@ namespace JobBars.UI {
             }
         }
 
-        public override unsafe void LoadExisting(AtkResNode* node) {
+        public override void LoadExisting(AtkResNode* node) {
             Selected = new AtkImageNode*[MAX];
             Ticks = new AtkResNode*[MAX];
 
@@ -111,11 +112,12 @@ namespace JobBars.UI {
             }
         }
 
-        public override void SetColor(UIColor.ElementColor color) {
+        public override void SetColor(ElementColor color) {
             foreach(var item in Selected) {
                 UIColor.SetColor((AtkResNode*)item, color);
             }
         }
+
         public void SetMaxValue(int value) {
             for(int idx = 0; idx < MAX; idx++) {
                 if(idx < value) {
@@ -126,6 +128,7 @@ namespace JobBars.UI {
                 }
             }
         }
+
         public void SetValue(int value) {
             for (int idx = 0; idx < MAX; idx++) {
                 if (idx < value) {
@@ -145,9 +148,11 @@ namespace JobBars.UI {
         public override int GetHeight(int param) {
             return 32;
         }
+
         public override int GetWidth(int param) {
             return 32 + 18 * (param - 1);
         }
+
         public override int GetHorizontalYOffset() {
             return -3;
         }

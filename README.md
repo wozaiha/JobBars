@@ -1,13 +1,15 @@
 # JobBars
 A plugin for XIVQuickLauncher which provides extra job gauges and a party buff tracker
-
-Including:
 - Number of GCDs under buffs (such as Fight or Flight, Inner Release)
 - DoT tracker (such as Dia, Miasma)
 - Proc display (Verfire/Verstone Ready)
+- Number of charges (Ricochet, Gauss Round)
 
 ## Usage
 To open the settings menu, use `/jobbars`
+
+## Why?
+Some people find these useful. If you only want some of them, gauges and be enabled and disabled in the settings menu.
 
 ## Jobs
 
@@ -33,7 +35,7 @@ To open the settings menu, use `/jobbars`
 + **Gauges**: Dia tracker
 
 ### <img src="Assets/JobIcons/AST.png" height="20px" width="20px"> AST
-+ **Gauges**: Combust Tracker
++ **Gauges**: Combust Tracker, Upgraded Earthly Star
 + **Buffs**: Cards, Divination
 
 ### <img src="Assets/JobIcons/MNK.png" height="20px" width="20px"> MNK
@@ -57,7 +59,7 @@ To open the settings menu, use `/jobbars`
 + **Buffs**: Battle Voice, Raging Strikes
 
 ### <img src="Assets/JobIcons/MCH.png" height="20px" width="20px"> MCH
-+ **Gauges**: GCDS used in Hypercharge, GCDS used in Wildfire
++ **Gauges**: GCDS used in Hypercharge, GCDS used in Wildfire, Charges of Ricochet, Charges of Gauss Round
 + **Buffs**: Wildfire
 
 ### <img src="Assets/JobIcons/DNC.png" height="20px" width="20px"> DNC
@@ -81,12 +83,14 @@ To open the settings menu, use `/jobbars`
 
 ## TODO
 - [ ] Glow around gauges
-- [ ] AST upgraded star
+- [ ] Split up party buffs and personal buffs
 - [ ] DRG Fang and Claw / Wheeling Thrust?
 - [ ] DRG Disembowel / Chaos Thrust? (probably not useful)
 - [ ] NIN GCDs under trick? (probably not useful)
-- [ ] MCH number of charges of Gauss Round / Richochet
 - [ ] Hide all buffs options
+- [x] ~~MCH number of charges of Gauss Round / Richochet~~
+- [x] ~~Track DoTs based on target~~
+- [x] ~~AST upgraded star~~
 - [x] ~~Move gauges independently~~
 - [x] ~~Sound effect when DoTs are low~~
 - [x] ~~Red text when DoTs are low~~

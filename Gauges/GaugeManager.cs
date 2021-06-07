@@ -1,4 +1,5 @@
 ﻿using Dalamud.Game.ClientState.Actors.Resolvers;
+using Dalamud.Game.ClientState.Structs;
 using Dalamud.Plugin;
 using JobBars.Data;
 using JobBars.Helper;
@@ -6,6 +7,8 @@ using JobBars.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -66,7 +69,6 @@ namespace JobBars.Gauges {
                 new GaugeTimer("Goring Blade", 21)
                     .WithTriggers(new []
                     {
-                        //new Item(ActionIds.GoringBlade)
                         new Item(BuffIds.GoringBlade)
                     })
                     .WithReplaceIcon(new []
@@ -118,12 +120,14 @@ namespace JobBars.Gauges {
             });
             // ============ AST ==================
             JobToGauges.Add(JobIds.AST, new Gauge[] {
+                new GaugeProc("Earthly Star Primed")
+                    .WithProcs(new []
+                    {
+                        new Proc(BuffIds.GiantDominance, UIColor.LightBlue)
+                    }),
                 new GaugeTimer("Combust", 30)
                     .WithTriggers(new []
                     {
-                        //new Item(ActionIds.Combust1),
-                        //new Item(ActionIds.Combust2),
-                        //new Item(ActionIds.Combust3),
                         new Item(BuffIds.Combust),
                         new Item(BuffIds.Combust2),
                         new Item(BuffIds.Combust3),
@@ -141,9 +145,6 @@ namespace JobBars.Gauges {
                 new GaugeTimer("Biolysis", 30)
                     .WithTriggers(new[]
                     {
-                        //new Item(ActionIds.ArcBio),
-                        //new Item(ActionIds.ArcBio2),
-                        //new Item(ActionIds.Biolysis)
                         new Item(BuffIds.ArcBio),
                         new Item(BuffIds.ArcBio2),
                         new Item(BuffIds.Biolysis)
@@ -161,9 +162,6 @@ namespace JobBars.Gauges {
                 new GaugeTimer("Dia", 30)
                     .WithTriggers(new []
                     {
-                        //new Item(ActionIds.Aero),
-                        //new Item(ActionIds.Aero2),
-                        //new Item(ActionIds.Dia)
                         new Item(BuffIds.Aero),
                         new Item(BuffIds.Aero2),
                         new Item(BuffIds.Dia)
@@ -180,14 +178,8 @@ namespace JobBars.Gauges {
             JobToGauges.Add(JobIds.BRD, new Gauge[] {
                 new GaugeTimer("Caustic Bite", 30)
                     .WithTriggers(new[]{
-                        //new Item(ActionIds.CausticBite),
-                        //new Item(ActionIds.VenomousBite),
                         new Item(BuffIds.CausticBite),
                         new Item(BuffIds.VenomousBite),
-                    })
-                    .WithTriggersRefreshOnly(new []
-                    {
-                        new Item(ActionIds.IronJaws)
                     })
                     .WithReplaceIcon(new []
                     {
@@ -198,14 +190,8 @@ namespace JobBars.Gauges {
                 new GaugeTimer("Stormbite", 30)
                     .WithTriggers(new []
                     {
-                        //new Item(ActionIds.Windbite),
-                        //new Item(ActionIds.Stormbite),
                         new Item(BuffIds.Windbite),
                         new Item(BuffIds.Stormbite),
-                    })
-                    .WithTriggersRefreshOnly(new []
-                    {
-                        new Item(ActionIds.IronJaws)
                     })
                     .WithReplaceIcon(new []
                     {
@@ -262,10 +248,6 @@ namespace JobBars.Gauges {
                 new GaugeTimer("Bio", 30)
                     .WithTriggers(new []
                     {
-                        //new Item(ActionIds.ArcBio),
-                        //new Item(ActionIds.ArcBio2),
-                        //new Item(ActionIds.Bio3),
-                        //new Item(ActionIds.TriDisaster)
                         new Item(BuffIds.ArcBio),
                         new Item(BuffIds.ArcBio2),
                         new Item(BuffIds.Bio3),
@@ -280,9 +262,6 @@ namespace JobBars.Gauges {
                 new GaugeTimer("Miasma", 30)
                     .WithTriggers(new []
                     {
-                        //new Item(ActionIds.Miasma),
-                        //new Item(ActionIds.Miasma3),
-                        //new Item(ActionIds.TriDisaster)
                         new Item(BuffIds.Miasma),
                         new Item(BuffIds.Miasma3),
                     })
@@ -318,7 +297,6 @@ namespace JobBars.Gauges {
                 new GaugeTimer("Higanbana", 60)
                     .WithTriggers(new []
                     {
-                        //new Item(ActionIds.Higanbana)
                         new Item(BuffIds.Higanbana)
                     })
                     .WithVisual(GaugeVisual.Bar(UIColor.Orange)),
@@ -334,8 +312,6 @@ namespace JobBars.Gauges {
                 new GaugeTimer("Thunder 3", 24)
                     .WithTriggers(new []
                     {
-                        //new Item(ActionIds.Thunder3),
-                        //new Item(ActionIds.Thunder)
                         new Item(BuffIds.Thunder3),
                         new Item(BuffIds.Thunder)
                     })
@@ -348,8 +324,6 @@ namespace JobBars.Gauges {
                 new GaugeTimer("Thunder 4", 18)
                     .WithTriggers(new []
                     {
-                        //new Item(ActionIds.Thunder4),
-                        //new Item(ActionIds.Thunder2)
                         new Item(BuffIds.Thunder4),
                         new Item(BuffIds.Thunder2)
                     })
@@ -394,7 +368,19 @@ namespace JobBars.Gauges {
                     {
                         new Item(BuffIds.Wildfire)
                     })
-                    .WithVisual(GaugeVisual.Arrow(UIColor.Red))
+                    .WithVisual(GaugeVisual.Arrow(UIColor.Red)),
+                new GaugeCharges("Gauss Round Charges", 30, 3)
+                    .WithTriggers(new []
+                    {
+                        new Item(ActionIds.GaussRound)
+                    })
+                    .WithVisual(GaugeVisual.BarDiamondCombo(UIColor.Red)),
+                new GaugeCharges("Ricochet Charges", 30, 3)
+                    .WithTriggers(new []
+                    {
+                        new Item(ActionIds.Ricochet)
+                    })
+                    .WithVisual(GaugeVisual.BarDiamondCombo(UIColor.LightBlue))
             });
             // ============ DNC ==================
             JobToGauges.Add(JobIds.DNC, new Gauge[] {
@@ -478,12 +464,12 @@ namespace JobBars.Gauges {
                     }
                     else {
                         if (Configuration.Config.GaugeHorizontal) { // HORIZONTAL
-                            UiHelper.SetPosition(gauge.UI.RootRes, totalPosition, gauge.UI.GetHorizontalYOffset());
+                            gauge.UI.SetPosition(new Vector2(totalPosition, gauge.UI.GetHorizontalYOffset()));
                             totalPosition += gauge.GetWidth();
                         }
                         else { // VERTICAL
                             int xPosition = Configuration.Config.GaugeAlignRight ? 160 - gauge.GetWidth() : 0;
-                            UiHelper.SetPosition(gauge.UI.RootRes, xPosition, totalPosition);
+                            gauge.UI.SetPosition(new Vector2(xPosition, totalPosition));
                             totalPosition += gauge.GetHeight();
                         }
                     }
@@ -495,6 +481,7 @@ namespace JobBars.Gauges {
                 gauge.SetupVisual();
             }
         }
+
         public UIElement GetUI(int idx, GaugeVisualType type) {
             switch(type) {
                 case GaugeVisualType.Arrow:
@@ -503,6 +490,8 @@ namespace JobBars.Gauges {
                     return UI.Gauges[idx];
                 case GaugeVisualType.Diamond:
                     return UI.Diamonds[idx];
+                case GaugeVisualType.BarDiamondCombo:
+                    return new UIGaugeDiamondCombo(UI, UI.Gauges[idx], UI.Diamonds[idx]); // kind of scuffed, but oh well
                 default:
                     return null;
             }
@@ -524,7 +513,17 @@ namespace JobBars.Gauges {
             var currentTime = DateTime.Now;
 
             Dictionary<Item, float> BuffDict = new Dictionary<Item, float>();
-            foreach(var status in PluginInterface.ClientState.LocalPlayer.StatusEffects) {
+            /*foreach(var status in PluginInterface.ClientState.LocalPlayer.StatusEffects) {
+                BuffDict[new Item
+                {
+                    Id = (uint)status.EffectId,
+                    Type = ItemType.Buff
+                }] = status.Duration > 0 ? status.Duration : status.Duration * -1;
+            }*/
+            var selfBuffAddr = PluginInterface.ClientState.LocalPlayer.Address + ActorOffsets.UIStatusEffects;
+            for (int i = 0; i < 30; i++) {
+                var addr = selfBuffAddr + i * 0xC;
+                var status = (StatusEffect)Marshal.PtrToStructure(addr, typeof(StatusEffect));
                 BuffDict[new Item
                 {
                     Id = (uint)status.EffectId,
@@ -544,19 +543,33 @@ namespace JobBars.Gauges {
                         }
                     }
 
-            foreach(var gauge in CurrentGauges)
-            {
-                var hasbuff = false;
-                foreach (var item in gauge.Triggers)
-                {
-                    if (item.Type != ItemType.Buff) continue;
-                    if (BuffDict.ContainsKey(item))
-                    {
-                        hasbuff = true;
-                        break;
+            if (PluginInterface.ClientState.Targets.CurrentTarget != null) {
+                /*foreach (var status in PluginInterface.ClientState.Targets.CurrentTarget.StatusEffects) {
+                    if (status.OwnerId.Equals(PluginInterface.ClientState.LocalPlayer?.ActorId)) {
+                        BuffDict[new Item
+                        {
+                            Id = (uint)status.EffectId,
+                            Type = ItemType.Buff
+                        }] = status.Duration > 0 ? status.Duration : status.Duration * -1;
+                    }
+                }*/
+
+                var buffAddr = PluginInterface.ClientState.Targets.CurrentTarget.Address + ActorOffsets.UIStatusEffects;
+                for(int i = 0; i < 30; i++) {
+                    var addr = buffAddr + i * 0xC;
+                    var status = (StatusEffect) Marshal.PtrToStructure(addr, typeof(StatusEffect));
+                    if (status.OwnerId.Equals(PluginInterface.ClientState.LocalPlayer?.ActorId)) {
+                        BuffDict[new Item
+                        {
+                            Id = (uint)status.EffectId,
+                            Type = ItemType.Buff
+                        }] = status.Duration > 0 ? status.Duration : status.Duration * -1;
                     }
                 }
-                if (!gauge.Enabled && !hasbuff) { continue; }
+            }
+
+            foreach(var gauge in CurrentGauges) {
+                if (!gauge.Enabled) { continue; }
                 gauge.Tick(currentTime, BuffDict);
             }
             UI.Icon.Update();

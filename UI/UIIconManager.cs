@@ -61,9 +61,11 @@ namespace JobBars.UI {
         private delegate void SetIconRecastTextDelegate2(IntPtr text, IntPtr a2);
         private Hook<SetIconRecastTextDelegate2> setIconRecastTextHook2;
 
-        public UIIconManager(DalamudPluginInterface pluginInterface) {
+        static int MILLIS_LOOP = 250;
+
+        public UIIconManager(DalamudPluginInterface pluginInterface, ClientInterface client) {
             PluginInterface = pluginInterface;
-            Client = new ClientInterface(pluginInterface.TargetModuleScanner, pluginInterface.Data);
+            Client = client;
 
             IconRecastOverride = new HashSet<IntPtr>();
             IconComponentOverride = new HashSet<IntPtr>();
@@ -115,7 +117,6 @@ namespace JobBars.UI {
             setIconRecastHook2.Dispose();
 
             Reset();
-            Client.Dispose();
         }
 
         public IntPtr SetIconRecast2(IntPtr icon) {
@@ -124,6 +125,7 @@ namespace JobBars.UI {
             }
             return setIconRecastHook2.Original(icon);
         }
+
         public void SetIconRecast(IntPtr icon) {
             if (!IconRecastOverride.Contains(icon)) {
                 setIconRecastHook.Original(icon);
@@ -137,6 +139,7 @@ namespace JobBars.UI {
             }
             return;
         }
+
         public void SetIconRecastText2(IntPtr text, IntPtr a2) {
             if (!IconTextOverride.Contains(text) || a2 != IntPtr.Zero) {
                 setIconRecastTextHook2.Original(text, a2);
@@ -145,7 +148,6 @@ namespace JobBars.UI {
         }
 
         // visuals get messed up when icons are dragged around, but there's not much I can do
-        static int MILLIS_LOOP = 250;
         public void Update() {
             if (ActionIdToStatus.Count == 0) return;
             var actionManager = Client.ActionManager;
@@ -237,6 +239,7 @@ namespace JobBars.UI {
         public void Cleanup(IntPtr node) {
             Cleanup((AtkComponentNode*)node);
         }
+
         public void Cleanup(AtkComponentNode* node) {
             var cdOverlay = (AtkImageNode*)node->Component->UldManager.NodeList[5];
             var dashOverlay = (AtkImageNode*)node->Component->UldManager.NodeList[9];
@@ -245,6 +248,7 @@ namespace JobBars.UI {
             UiHelper.Hide(cdOverlay);
             UiHelper.Hide(dashOverlay);
         }
+
         private void ResetColor(AtkImageNode* iconImage) {
             iconImage->AtkResNode.MultiplyBlue = 100;
             iconImage->AtkResNode.MultiplyBlue = 100;

@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
-using Newtonsoft.Json.Linq;
 using JobBars.Helper;
 using Dalamud.Game.Internal;
 using JobBars.UI;
@@ -19,7 +18,7 @@ using JobBars.Gauges;
 using Dalamud.Game.ClientState.Actors.Resolvers;
 using JobBars.Buffs;
 using JobBars.PartyList;
-using System.Runtime.InteropServices;
+using FFXIVClientInterface;
 
 #pragma warning disable CS0659
 namespace JobBars {
@@ -47,8 +46,11 @@ namespace JobBars {
         private bool Ready => (PluginInterface.ClientState != null && PluginInterface.ClientState.LocalPlayer != null);
         private bool Init = false;
 
+        public static ClientInterface Client;
+
         public void Initialize(DalamudPluginInterface pluginInterface) {
             PluginInterface = pluginInterface;
+            Client = new ClientInterface(pluginInterface.TargetModuleScanner, pluginInterface.Data);
             UiHelper.Setup(pluginInterface.TargetModuleScanner);
             UIColor.SetupColors();
             SetupActions();
@@ -89,6 +91,7 @@ namespace JobBars {
             PluginInterface.ClientState.TerritoryChanged -= ZoneChanged;
 
             UI.Dispose();
+            Client.Dispose();
 
             RemoveCommands();
         }
@@ -103,6 +106,7 @@ namespace JobBars {
                 }
             }
         }
+
         private void ReceiveActionEffect(int sourceId, IntPtr sourceCharacter, IntPtr pos, IntPtr effectHeader, IntPtr effectArray, IntPtr effectTrail) {
             if (!Ready || !Init) {
                 receiveActionEffectHook.Original(sourceId, sourceCharacter, pos, effectHeader, effectArray, effectTrail);
@@ -193,6 +197,7 @@ namespace JobBars {
                 Reset();
             }
         }
+
         private void ZoneChanged(object sender, ushort e) {
             Reset();
         }
@@ -203,6 +208,7 @@ namespace JobBars {
                 return PluginInterface.ClientState.LocalPlayer.ActorId;
             return 0;
         }
+
         private int FindCharaPet() {
             int charaId = GetCharacterActorId();
             foreach (Actor a in PluginInterface.ClientState.Actors) {
@@ -214,6 +220,7 @@ namespace JobBars {
             }
             return -1;
         }
+
         private bool IsInParty(int actorId) {
             foreach(var pMember in Party) {
                 if(pMember.Actor != null && pMember.Actor.ActorId == actorId) {
@@ -253,7 +260,7 @@ namespace JobBars {
             BManager?.Tick();
             Animation.Tick();
 
-            if(Party.Count < LastPartyCount) {
+            if (Party.Count < LastPartyCount) {
                 BManager?.SetJob(CurrentJob);
             }
             LastPartyCount = Party.Count;
@@ -280,12 +287,15 @@ namespace JobBars {
                 ShowInHelp = true
             });
         }
+
         private void OnOpenConfig(object sender, EventArgs eventArgs) {
             Visible = true;
         }
+
         public void OnCommand(object command, object args) {
             Visible = !Visible;
         }
+
         public void RemoveCommands() {
             PluginInterface.CommandManager.RemoveHandler("/jobbars");
         }
@@ -298,33 +308,37 @@ namespace JobBars {
         GCD,
         OGCD
     }
+
     public struct Item {
         public uint Id;
         public ItemType Type;
 
-        // GENERATORS
         public Item(ActionIds action) {
             Id = (uint)action;
             Type = ItemType.Action;
         }
+
         public Item(BuffIds buff) {
             Id = (uint)buff;
             Type = ItemType.Buff;
         }
 
-        // EQUALITY
         public override bool Equals(object obj) {
             return obj is Item overrides && Equals(overrides);
         }
+
         public bool Equals(Item other) {
             return (Id == other.Id) && ((Type == ItemType.Buff) == (other.Type == ItemType.Buff));
         }
+
         public static bool operator ==(Item left, Item right) {
             return left.Equals(right);
         }
+
         public static bool operator !=(Item left, Item right) {
             return !(left == right);
         }
+
         public override int GetHashCode() {
             int hash = 13;
             hash = (hash * 7) + Id.GetHashCode();

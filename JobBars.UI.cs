@@ -14,14 +14,15 @@ using static JobBars.UI.UIColor;
 
 namespace JobBars {
     public unsafe partial class JobBars {
-
         public bool Visible = false;
         private bool GAUGE_LOCK = true;
         private bool BUFF_LOCK = true;
 
+        JobIds G_SelectedJob = JobIds.OTHER;
+        JobIds B_SelectedJob = JobIds.OTHER;
+
         private void BuildUI() {
             if (!Ready || !Init) return;
-
             // ====== SETTINGS =======
             string _ID = "##JobBars_Settings";
             ImGuiHelpers.ForceNextWindowMainViewport();
@@ -65,15 +66,16 @@ namespace JobBars {
                     ImGuiHelpers.ForceNextWindowMainViewport();
                     ImGui.SetNextWindowPos(Configuration.Config.GaugePosition, ImGuiCond.FirstUseEver);
                     ImGui.SetNextWindowSize(new Vector2(200, 200));
+                    ImGui.PushStyleVar(ImGuiStyleVar.Alpha, 0.7f);
                     ImGui.Begin("##GaugePosition", ImGuiWindowFlags.NoNav | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoDocking | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize);
                     ImGui.Text("Gauge Bar Position");
-
                     var pos = ImGui.GetWindowPos();
                     if (pos != Configuration.Config.GaugePosition) {
                         Configuration.Config.GaugePosition = pos;
                         Configuration.Config.Save();
                         UI?.SetGaugePosition(pos);
                     }
+                    ImGui.PopStyleVar(1);
                 }
 
                 ImGui.End();
@@ -83,21 +85,21 @@ namespace JobBars {
                 ImGuiHelpers.ForceNextWindowMainViewport();
                 ImGui.SetNextWindowPos(Configuration.Config.BuffPosition, ImGuiCond.FirstUseEver);
                 ImGui.SetNextWindowSize(new Vector2(200, 200));
+                ImGui.PushStyleVar(ImGuiStyleVar.Alpha, 0.7f);
                 ImGui.Begin("##BuffPosition", ImGuiWindowFlags.NoNav | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoDocking | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize);
                 ImGui.Text("Buff Bar Position");
-
                 var pos = ImGui.GetWindowPos();
                 if (pos != Configuration.Config.BuffPosition) {
                     Configuration.Config.BuffPosition = pos;
                     Configuration.Config.Save();
                     UI?.SetBuffPosition(pos);
                 }
+                ImGui.PopStyleVar(1);
 
                 ImGui.End();
             }
         }
 
-        JobIds G_SelectedJob = JobIds.OTHER;
         private void DrawGaugeSettings() {
             if (GManager == null) return;
             string _ID = "##JobBars_Gauges";
@@ -170,6 +172,9 @@ namespace JobBars {
                     }
                     else if (gauge is GaugeProc) {
                         type = "PROCS";
+                    }
+                    else if(gauge is GaugeCharges) {
+                        type = "CHARGES";
                     }
 
                     ImGui.TextColored(_enabled ? new Vector4(0, 1, 0, 1) : new Vector4(1, 0, 0, 1), $"{gauge.Name} [{type}]");
@@ -245,12 +250,12 @@ namespace JobBars {
             ImGui.Columns(1);
             ImGui.EndChild();
         }
+
         public void SetColor(Gauge gauge, ElementColor color) {
             gauge.Visual.Color = color;
             gauge.SetupVisual(resetValue: false);
         }
 
-        JobIds B_SelectedJob = JobIds.OTHER;
         private void DrawBuffSettings() {
             if (GManager == null) return;
             string _ID = "##JobBars_Buffs";

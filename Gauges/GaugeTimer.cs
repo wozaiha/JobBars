@@ -15,8 +15,6 @@ namespace JobBars.Gauges {
         private bool ReplaceIcon = false;
         private ActionIds[] ReplaceIconAction;
 
-        private Item[] TriggersRefreshOnly;
-
         private float Duration;
         private float MaxDuration;
         private float DefaultDuration;
@@ -25,7 +23,6 @@ namespace JobBars.Gauges {
         private static float LowTimerWarning = 4.0f;
 
         public GaugeTimer(string name, float duration) : base(name) {
-            TriggersRefreshOnly = new Item[0];
             MaxDuration = duration;
             DefaultDuration = MaxDuration;
             DefaultVisual = Visual = new GaugeVisual
@@ -52,6 +49,7 @@ namespace JobBars.Gauges {
                 Icon.ActionIdToState[(uint)icon] = IconState.StartRunning;
             }
         }
+
         private void SetIcon(double current, float max) {
             if (!ReplaceIcon || !Configuration.Config.GaugeIconReplacement) return;
             foreach (var icon in ReplaceIconAction) {
@@ -62,6 +60,7 @@ namespace JobBars.Gauges {
                 };
             }
         }
+
         private void ResetIcon() {
             if (!ReplaceIcon || !Configuration.Config.GaugeIconReplacement) return;
             foreach (var icon in ReplaceIconAction) {
@@ -74,11 +73,13 @@ namespace JobBars.Gauges {
             }
         }
 
-        // ===== UPDATE ============
         public override void Tick(DateTime time, Dictionary<Item, float> buffDict) {
             var timeLeft = TimeLeft(Duration, time, buffDict);
-            if (timeLeft > 0) State = GaugeState.Active;
-            else timeLeft = 0;
+            if(timeLeft > 0 && State == GaugeState.Inactive) { // switching targets with DoTs on them, need to restart the icon, etc.
+                State = GaugeState.Active;
+                StartIcon();
+            }
+
             if (State == GaugeState.Active) {
                 if (timeLeft <= 0) {
                     timeLeft = 0; // prevent "-1" or something
@@ -105,12 +106,9 @@ namespace JobBars.Gauges {
                 LastTimeLeft = timeLeft;
             }
         }
+
         public override void ProcessAction(Item action) {
-            if (
-                (Triggers.Contains(action) && (!(State == GaugeState.Active) || AllowRefresh)) ||
-                (TriggersRefreshOnly.Contains(action) && State == GaugeState.Active) // like iron jaws
-            ) { // START
-                
+            if (Triggers.Contains(action) && (!(State == GaugeState.Active) || AllowRefresh)) { // START
                 SetActive(action);
                 Duration = DefaultDuration;
                 StartIcon();
@@ -122,6 +120,7 @@ namespace JobBars.Gauges {
         public override int GetHeight() {
             return UI == null ? 0 : UI.GetHeight(0);
         }
+
         public override int GetWidth() {
             return UI == null ? 0 : UI.GetWidth(0);
         }
@@ -131,28 +130,29 @@ namespace JobBars.Gauges {
             Triggers = triggers;
             return this;
         }
-        public GaugeTimer WithTriggersRefreshOnly(Item[] triggersRefreshOnly) {
-            TriggersRefreshOnly = triggersRefreshOnly;
-            return this;
-        }
+
         public GaugeTimer WithStartHidden() {
             StartHidden = true;
             return this;
         }
+
         public GaugeTimer NoRefresh() {
             AllowRefresh = false;
             return this;
         }
+
         public GaugeTimer WithReplaceIcon(ActionIds[] action, UIIconManager icon) {
             Icon = icon;
             ReplaceIcon = true;
             ReplaceIconAction = action;
             return this;
         }
+
         public GaugeTimer WithDefaultDuration(float duration) {
             DefaultDuration = duration;
             return this;
         }
+
         public GaugeTimer WithVisual(GaugeVisual visual) {
             DefaultVisual = Visual = visual;
             if (Configuration.Config.GetColorOverride(Name, out var color)) {

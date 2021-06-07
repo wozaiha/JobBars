@@ -34,7 +34,6 @@ namespace JobBars.Gauges {
             }
         }
 
-        // ===== UPDATE ============
         public override void Tick(DateTime time, Dictionary<Item, float> buffDict) {
             if (UI is UIDiamond diamond) {
                 foreach (var proc in Procs) {
@@ -48,6 +47,7 @@ namespace JobBars.Gauges {
                 }
             }
         }
+
         public override void ProcessAction(Item action) { }
 
         public override int GetHeight() {
