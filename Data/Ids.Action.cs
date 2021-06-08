@@ -42,6 +42,7 @@ namespace JobBars.Data {
         Combust2 = 3608,
         Combust3 = 16554,
         Divination = 16552,
+        EarthStar = 7439,
         // MNK
         Brotherhood = 7396,
         PerfectBalance = 69,

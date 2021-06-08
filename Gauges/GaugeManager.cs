@@ -120,11 +120,11 @@ namespace JobBars.Gauges {
             });
             // ============ AST ==================
             JobToGauges.Add(JobIds.AST, new Gauge[] {
-                new GaugeProc("Earthly Star Primed")
-                    .WithProcs(new []
-                    {
-                        new Proc(BuffIds.GiantDominance, UIColor.LightBlue)
-                    }),
+                //new GaugeProc("Earthly Star Primed")
+                //    .WithProcs(new []
+                //    {
+                //        new Proc(BuffIds.GiantDominance, UIColor.LightBlue)
+                //    }),
                 new GaugeTimer("Combust", 30)
                     .WithTriggers(new []
                     {
@@ -145,7 +145,23 @@ namespace JobBars.Gauges {
                         new Item(BuffIds.Lightspeed)
                     })
                     .WithVisual(GaugeVisual.Bar(UIColor.Yellow))
-                    .WithNoLowWarning()
+                    .WithNoLowWarning(),
+                new GaugeCombined("Earth Star",20)
+                    .WithTriggers(new Item[]
+                    {
+                        new Item(BuffIds.GiantDominance),
+                        new Item(BuffIds.StarDominance)
+                    })
+                    .OtherTriggers(new Item[]
+                    {
+                        new Item(ActionIds.EarthStar)
+                    },60)
+                    .DiamondTrigger(new Item[]
+                    {
+                        new Item(ActionIds.EarthStar),
+                        new Item(BuffIds.GiantDominance)
+                    })
+                    .WithVisual(GaugeVisual.BarDiamondCombo(UIColor.White))
             });
             // ============ SCH ==================
             JobToGauges.Add(JobIds.SCH, new Gauge[] {
@@ -310,49 +326,28 @@ namespace JobBars.Gauges {
             });
             // ============ BLM ==================
             JobToGauges.Add(JobIds.BLM, new Gauge[] {
-                new GaugeProc("Firestarter/Thundercloud")
+                new GaugeProc("Firestarter")
                     .WithProcs(new []
                     {
-                        new Proc(BuffIds.Thundercloud, UIColor.DarkBlue),
                         new Proc(BuffIds.Firestarter, UIColor.Orange)
                     }),
-                new GaugeTimer("Thunder 3", 24)
-                    .WithTriggers(new []
-                    {
-                        new Item(BuffIds.Thunder3),
-                        new Item(BuffIds.Thunder)
-                    })
-                    .WithReplaceIcon(new []
-                    {
-                        ActionIds.Thunder3,
-                        ActionIds.Thunder
-                    }, UI.Icon)
-                    .WithVisual(GaugeVisual.Bar(UIColor.DarkBlue)),
-                new GaugeTimer("Thunder 4", 18)
-                    .WithTriggers(new []
-                    {
-                        new Item(BuffIds.Thunder4),
-                        new Item(BuffIds.Thunder2)
-                    })
-                    .WithReplaceIcon(new []
-                    {
-                        ActionIds.Thunder4,
-                        ActionIds.Thunder2
-                    }, UI.Icon)
-                    .WithVisual(GaugeVisual.Bar(UIColor.Purple))
-                    .WithStartHidden(),
-
-                new GaugeCombined("Thunder", 24,3)
+                new GaugeCombined("Thunder", 24)
                 .WithTriggers(new []
                 {
                     new Item(BuffIds.Thunder3),
-                    new Item(BuffIds.Thunder)
+                    new Item(BuffIds.Thunder),
                 })
-                .TriggerDiamond(new []
+                .OtherTriggers(new []
+                {
+                    new Item(BuffIds.Thundercloud),
+                    new Item(BuffIds.Thunder4),
+                    new Item(BuffIds.Thunder2)
+                },18)
+                .DiamondTrigger(new []
                 {
                     new Item(BuffIds.Thundercloud)
                 })
-                .WithVisual(GaugeVisual.BarDiamondCombo(UIColor.BlueGreen)),
+                .WithVisual(GaugeVisual.BarDiamondCombo(UIColor.DarkBlue)),
 
             });
             // ============ RDM ==================
@@ -457,8 +452,6 @@ namespace JobBars.Gauges {
             JobToGauges[JobIds.SMN][0].HideGauge = JobToGauges[JobIds.SMN][1]; // bahamut + pheonix
             JobToGauges[JobIds.SMN][1].HideGauge = JobToGauges[JobIds.SMN][0];
 
-            JobToGauges[JobIds.BLM][1].HideGauge = JobToGauges[JobIds.BLM][2]; // thunder 3 + thunder 4
-            JobToGauges[JobIds.BLM][2].HideGauge = JobToGauges[JobIds.BLM][1];
         }
 
         public void SetJob(JobIds job) {

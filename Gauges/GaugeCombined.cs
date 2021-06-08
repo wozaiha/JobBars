@@ -10,12 +10,13 @@ using JobBars.Data;
 namespace JobBars.Gauges {
     public class GaugeCombined : Gauge {
         private float CD;
-        private int MaxCharges;
-        private Item[] triggerItem;
+        private Item[] diamondTrigger;
+        private GaugeVisual otherVisual;
+        private Item[] otherTriggers;
+        private float otherCD;
 
-        public GaugeCombined(string name, float cd, int maxCharges) : base(name) {
+        public GaugeCombined(string name, float cd) : base(name) {
             CD = cd;
-            MaxCharges = maxCharges;
             DefaultVisual = Visual = new GaugeVisual
             {
                 Type = GaugeVisualType.BarDiamondCombo,
@@ -27,87 +28,94 @@ namespace JobBars.Gauges {
             UI?.SetColor(Visual.Color);
             if (resetValue) {
                 if (UI is UIGaugeDiamondCombo combo) {
-                    combo.SetMaxValue(MaxCharges);
-                    combo.SetDiamondValue(MaxCharges);
+                    combo.SetMaxValue(1);
+                    combo.SetDiamondValue(1);
                     combo.SetText("0");
                     combo.SetPercent(0);
                 }
             }
         }
 
-        public override unsafe void Tick(DateTime time, Dictionary<Item, float> buffDict) {
-            foreach(var trigger in Triggers) {
-                if (trigger.Type != ItemType.Buff)
-                {
-                    var adjustedActionId = JobBars.Client.ActionManager.GetAdjustedActionId(trigger.Id);
-                    var recastGroup = (int)JobBars.Client.ActionManager.GetRecastGroup(0x01, adjustedActionId) + 1;
-                    if (recastGroup == 0 || recastGroup == 58) continue;
-                    var recastTimer = JobBars.Client.ActionManager.GetGroupRecastTime(recastGroup);
-
-                    if(recastTimer->IsActive == 1) {
-                        //var currentCharges = (int)Math.Floor(recastTimer->Elapsed / CD);
-                        var currentTime = recastTimer->Elapsed % CD;
-                        var timeLeft = CD - currentTime;
-
-                        if (UI is UIGaugeDiamondCombo combo) {
-                            //combo.SetDiamondValue(currentCharges);
-                            combo.SetText(((int)timeLeft).ToString());
-                            combo.SetPercent((float)currentTime / CD);
-                            
-                        }
-                        //return;
-                    }
-                }
-                else
-                {
-                    if (buffDict.ContainsKey(trigger))
-                    {
-                        buffDict.TryGetValue(trigger,out var timeLeft);
-                        if (trigger.Id == 0x9999) timeLeft += 10;
-                        
-                        if (UI is UIGaugeDiamondCombo combo) {
-                            //PluginLog.Information("Tick"+timeLeft);
-                            //combo.SetDiamondValue(1);
-                            combo.SetText(((int)timeLeft).ToString());
-                            combo.SetPercent((float)timeLeft / CD);
-                        }
-                    }
-                    else if (UI is UIGaugeDiamondCombo combo)
-                    {
-                        combo.SetDiamondValue(0);
-                    }
-                }
-
-                
+        unsafe float CheckCD(uint id)
+        {
+            var adjustedActionId = JobBars.Client.ActionManager.GetAdjustedActionId(id);
+            var recastGroup = (int)JobBars.Client.ActionManager.GetRecastGroup(0x01, adjustedActionId) + 1;
+            if (recastGroup == 0 || recastGroup == 58) return 0x9999;
+            var recastTimer = JobBars.Client.ActionManager.GetGroupRecastTime(recastGroup);
+            if (recastTimer->IsActive == 1)
+            {
+                var currentTime = recastTimer->Elapsed % recastTimer->Total;
+                var timeLeft = recastTimer->Total - currentTime;
+                return timeLeft;
             }
+            return 0;
+        }
 
-            foreach (var trigger in triggerItem)
+        public override void Tick(DateTime time, Dictionary<Item, float> buffDict) {
+            if (UI is UIGaugeDiamondCombo combo)
             {
                 
-                if (trigger.Type != ItemType.Buff) continue;
-                if (buffDict.ContainsKey(trigger))
+                foreach (var trigger in diamondTrigger)
                 {
-                    buffDict.TryGetValue(trigger,out var timeLeft);
-                    if (trigger.Id == 0x9999) timeLeft += 10;
-                
-                    if (UI is UIGaugeDiamondCombo combo) {
-                        combo.SetDiamondValue(1);
-                        //combo.SetText(((int)timeLeft).ToString());
-                        //combo.SetPercent((float)timeLeft / CD);
+
+                    if (trigger.Type == ItemType.Action)
+                    {
+                        var timeleft = CheckCD(trigger.Id);
+                        combo.SetDiamondValue(timeleft == 0 ? 1 : 0);
+                    }
+                    else
+                    {
+                        buffDict.TryGetValue(trigger, out var timeleft);
+                        combo.SetDiamondValue(timeleft == 0 ? 0 : 1);
+                    }
+
+                }
+
+                var percent = 0f;
+                var timeLeft = 0f;
+                foreach (var trigger in Triggers)
+                {
+                    var left = 0f;
+                    if (trigger.Type == ItemType.Action)
+                    {
+                        left = CheckCD(trigger.Id);
+                    }
+                    else
+                    {
+                        buffDict.TryGetValue(trigger, out left);
+                        if (trigger.Id == 1224 && left > 0) left += 10f;
+                    }
+
+                    if (left > 0)
+                    {
+                        timeLeft = left;
+                        percent = timeLeft / CD;
                     }
                 }
-                else if (UI is UIGaugeDiamondCombo combo)
+
+                foreach (var trigger in otherTriggers)
                 {
-                    combo.SetDiamondValue(0);
+
+                    var left = 0f;
+                    if (trigger.Type == ItemType.Action)
+                    {
+                        left = CheckCD(trigger.Id);
+                    }
+                    else
+                    {
+                        buffDict.TryGetValue(trigger, out left);
+                    }
+
+                    if (left < timeLeft && left != 0 || timeLeft == 0)
+                    {
+                        timeLeft = left;
+                        percent = left / otherCD;
+                    }
+
                 }
+                combo.SetText(timeLeft.ToString("0.0"));
+                combo.SetPercent(percent);
 
-                return;
-            }
-
-            if (UI is UIGaugeDiamondCombo comboInactive) {
-                comboInactive.SetDiamondValue(0);
-                comboInactive.SetText("0");
-                comboInactive.SetPercent(0);
             }
         }
 
@@ -127,6 +135,12 @@ namespace JobBars.Gauges {
             return this;
         }
 
+        public GaugeCombined OtherTriggers(Item[] triggers,float cd) {
+            otherTriggers = triggers;
+            otherCD = cd;
+            return this;
+        }
+
         public GaugeCombined WithVisual(GaugeVisual visual)
         {
             DefaultVisual = Visual = visual;
@@ -134,9 +148,9 @@ namespace JobBars.Gauges {
             return this;
         }
 
-        public GaugeCombined TriggerDiamond(Item[] triggers)
+        public GaugeCombined DiamondTrigger(Item[] triggers)
         {
-            triggerItem = triggers;
+            diamondTrigger = triggers;
             return this;
         }
     }

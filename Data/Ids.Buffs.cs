@@ -38,6 +38,7 @@ namespace JobBars.Data {
         Combust = 838,
         Combust2 = 843,
         Combust3 = 0x759,
+        StarDominance = 1224,
         GiantDominance = 1248,
         Lightspeed = 841,
         // MNK
