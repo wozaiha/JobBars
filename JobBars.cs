@@ -96,7 +96,6 @@ namespace JobBars {
             RemoveCommands();
         }
 
-        // ========= HOOKS ===========
         private void SetupActions() {
             var sheet = PluginInterface.Data.GetExcelSheet<Lumina.Excel.GeneratedSheets.Action>().Where(x => !string.IsNullOrEmpty(x.Name) && x.IsPlayerAction);
             foreach(var item in sheet) {
@@ -188,7 +187,6 @@ namespace JobBars {
                     }
                 }
             }
-
             receiveActionEffectHook.Original(sourceId, sourceCharacter, pos, effectHeader, effectArray, effectTrail);
         }
         private void ActorControlSelf(uint entityId, uint id, uint arg0, uint arg1, uint arg2, uint arg3, uint arg4, uint arg5, UInt64 targetId,byte a10) {
@@ -202,7 +200,6 @@ namespace JobBars {
             Reset();
         }
 
-        // ======= DATA ==========
         private int GetCharacterActorId() {
             if (PluginInterface.ClientState.LocalPlayer != null)
                 return PluginInterface.ClientState.LocalPlayer.ActorId;
@@ -230,7 +227,6 @@ namespace JobBars {
             return false;
         }
 
-        // ======== UPDATE =========
         private void FrameworkOnUpdate(Framework framework) {
             if (!Ready) {
                 if(Init && !UI.IsInitialized()) { // a logout, need to recreate everything once we're done
