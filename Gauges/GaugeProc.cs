@@ -53,6 +53,7 @@ namespace JobBars.Gauges {
         public override int GetHeight() {
             return UI == null ? 0 : UI.GetHeight(0);
         }
+
         public override int GetWidth() {
             return UI == null ? 0 : UI.GetWidth(Size);
         }
