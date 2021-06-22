@@ -91,14 +91,14 @@ namespace JobBars.UI {
             nameplateAddon->UldManager.NodeList[nameplateAddon->UldManager.NodeListCount++] = (AtkResNode*)icon;
             nameplateAddon->UldManager.NodeList[nameplateAddon->UldManager.NodeListCount++] = (AtkResNode*)Overlay;
             nameplateAddon->UldManager.NodeList[nameplateAddon->UldManager.NodeListCount++] = (AtkResNode*)Border;
-            nameplateAddon->UldManager.NodeList[nameplateAddon->UldManager.NodeListCount++] = (AtkResNode*)TextNode;
 
             icon->AtkResNode.ParentNode = RootRes;
             Overlay->AtkResNode.ParentNode = RootRes;
             TextNode->AtkResNode.ParentNode = RootRes;
             Border->AtkResNode.ParentNode = RootRes;
 
-            RootRes->ChildNode = (AtkResNode*)icon;
+            RootRes->ChildNode = (AtkResNode*)TextNode;
+            TextNode->AtkResNode.PrevSiblingNode = (AtkResNode*)icon;
             icon->AtkResNode.PrevSiblingNode = (AtkResNode*)Overlay;
             Overlay->AtkResNode.PrevSiblingNode = (AtkResNode*)Border;
             Border->AtkResNode.PrevSiblingNode = (AtkResNode*)TextNode;
@@ -139,7 +139,7 @@ namespace JobBars.UI {
         public void SetPercent(float percent) {
             int h = (int)(HEIGHT * percent);
             int yOffset = HEIGHT - h;
-            UiHelper.SetSize( (AtkResNode*) Overlay, null, h);
+            UiHelper.SetSize((AtkResNode*)Overlay, null, h);
             UiHelper.SetPosition((AtkResNode*)Overlay, 0, yOffset);
         }
 
