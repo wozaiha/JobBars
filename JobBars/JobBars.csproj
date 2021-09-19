@@ -32,10 +32,12 @@
     <Reference Include="FFXIVClientStructs">
       <Private>false</Private>
       <HintPath>..\lib\FFXIVClientStructs.dll</HintPath>
+	    <HintPath>$(APPDATA)\XIVLauncher\addon\Hooks\dev\FFXIVClientStructs.dll</HintPath>
     </Reference>
     <Reference Include="FFXIVClientStructs.Common">
       <Private>false</Private>
       <HintPath>..\lib\FFXIVClientStructs.Common.dll</HintPath>
+	    <HintPath>$(APPDATA)\XIVLauncher\addon\Hooks\dev\FFXIVClientStructs.Common.dll</HintPath>
     </Reference>
     <Reference Include="Dalamud">
       <Private>false</Private>
