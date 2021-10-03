@@ -3,8 +3,8 @@
     <Target Name="ILRepacker" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
 
     <ItemGroup>
-        <InputAssemblies Include="../lib/FFXIVClientStructs.Common.dll" />
-      <InputAssemblies Include="../lib/FFXIVClientStructs.dll" />
+        <InputAssemblies Include="$(APPDATA)\XIVLauncher\addon\Hooks\dev/FFXIVClientStructs.Common.dll" />
+      <InputAssemblies Include="$(APPDATA)\XIVLauncher\addon\Hooks\dev/FFXIVClientStructs.dll" />
         <InputAssemblies Include="$(OutputPath)JobBars.dll" />
     </ItemGroup>
 
