@@ -56,13 +56,13 @@ namespace JobBars.UI {
 
             // ===== BUFF PARTYLIST ======
 
-            for(var i = 0; i < PartyListBuffs.Count; i++) {
-                var partyMember = partyListAddon->PartyMember[i];
-                PartyListBuffs[i].AttachTo(partyMember.TargetGlowContainer, partyMember.IconBottomLeftText);
-                partyMember.PartyMemberComponent->UldManager.UpdateDrawNodeList();
-            }
+            //for(var i = 0; i < PartyListBuffs.Count; i++) {
+            //    var partyMember = partyListAddon->PartyMember[i];
+            //    PartyListBuffs[i].AttachTo(partyMember.TargetGlowContainer, partyMember.IconBottomLeftText);
+            //    partyMember.PartyMemberComponent->UldManager.UpdateDrawNodeList();
+            //}
 
-            PluginLog.Log("Attached PartyList");
+            //PluginLog.Log("Attached PartyList");
 
             // ===== COOLDOWNS =========
 
@@ -82,9 +82,9 @@ namespace JobBars.UI {
 
             PluginLog.Log("Updated PartyList");
 
-            partyListAddon->AtkUnitBase.UldManager.UpdateDrawNodeList();
+            //partyListAddon->AtkUnitBase.UldManager.UpdateDrawNodeList();
 
-            PluginLog.Log("Updated Cooldowns");
+            //PluginLog.Log("Updated Cooldowns");
         }
 
         public void Tick(float percent) {
